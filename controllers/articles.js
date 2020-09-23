@@ -4,7 +4,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 const sendArticles = (req, res, next) => {
-  Article.find({})
+  Article.find({ owner: req.user._id })
     .then((articles) => res.send({ data: articles }))
     .catch(next);
 };
@@ -27,16 +27,16 @@ const createArticle = (req, res, next) => {
 };
 
 const deleteArticle = (req, res, next) => {
-  Article.findById(req.params.articleId)
+  Article.findById(req.params.articleId).select('+owner')
     .then((article) => {
       if (!article) {
         throw new NotFoundError('Article not found');
-      } if (article.owner === req.user._id) {
+      } if (article.owner.toString() === req.user._id) {
         Article.findByIdAndRemove(req.params.articleId)
           .then((removedCard) => res.send({ data: removedCard }))
           .catch(next);
       } else {
-        throw new ForbiddenError('Only owner can delete article');
+        throw new ForbiddenError('Удалять записи может только их владелец');
       }
     })
     .catch((err) => {

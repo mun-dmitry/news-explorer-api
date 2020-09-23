@@ -10,7 +10,7 @@ const sendUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('User not found');
+        throw new NotFoundError('Пользователь не найден');
       }
       res.send({
         data: {
