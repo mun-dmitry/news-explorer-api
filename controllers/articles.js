@@ -5,7 +5,7 @@ const ForbiddenError = require('../errors/ForbiddenError');
 
 const sendArticles = (req, res, next) => {
   Article.find({})
-    .then((articles) => res.send({ data: articles}))
+    .then((articles) => res.send({ data: articles }))
     .catch(next);
 };
 
@@ -18,8 +18,12 @@ const createArticle = (req, res, next) => {
     keyword, title, text, date, source, link, image, owner,
   })
     .then((card) => res.send({ data: card }))
-    // Check for 'ValidationError' -------------------!!!!!!!
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError(err.message));
+      }
+      next(err);
+    });
 };
 
 const deleteArticle = (req, res, next) => {
