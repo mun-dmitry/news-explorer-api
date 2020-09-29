@@ -46,7 +46,12 @@ const createUser = (req, res, next) => {
         })
         .then((user) => {
           User.findById(user._id)
-            .then((createdUser) => res.send({ data: createdUser }))
+            .then((createdUser) => res.send({ data:
+              {
+                name: createdUser.name,
+                email: createdUser.email,
+              },
+            }))
             .catch(next);
         })
         .catch(next);
