@@ -12,7 +12,7 @@ const auth = require('./middlewares/auth.js');
 const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 const { login, createUser } = require('./controllers/users.js');
 const errorsProcessor = require('./helpers/errorsProcessor');
-const { mongoAddress } = require('./appconfig');
+const { mongoAddress, limiter } = require('./appconfig');
 
 const { PORT = 3000 } = process.env;
 
@@ -29,6 +29,7 @@ mongoose.connect(mongoAddress, {
 });
 
 app.use(helmet());
+app.use(limiter);
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(requestLogger);
