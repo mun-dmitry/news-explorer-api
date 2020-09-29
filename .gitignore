@@ -15,6 +15,5 @@ node_modules
 .vscode
 
 # Other files
-.editorconfig
 .env
 desktop.ini

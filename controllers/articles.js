@@ -1,7 +1,6 @@
 const Article = require('../models/article');
-const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
-const ForbiddenError = require('../errors/ForbiddenError');
+const errorExtenders = require('../helpers/errorsProcessor').classes;
+const { messages } = require('../constants');
 
 const sendArticles = (req, res, next) => {
   Article.find({ owner: req.user._id })
@@ -20,7 +19,7 @@ const createArticle = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError(err.message));
+        next(new errorExtenders.BadRequestError(err.message));
       }
       next(err);
     });
@@ -30,18 +29,18 @@ const deleteArticle = (req, res, next) => {
   Article.findById(req.params.articleId).select('+owner')
     .then((article) => {
       if (!article) {
-        throw new NotFoundError('Article not found');
+        throw new errorExtenders.NotFoundError(messages.articleNotFound);
       } if (article.owner.toString() === req.user._id) {
         Article.findByIdAndRemove(req.params.articleId)
           .then((removedCard) => res.send({ data: removedCard }))
           .catch(next);
       } else {
-        throw new ForbiddenError('Удалять записи может только их владелец');
+        throw new errorExtenders.ForbiddenError(messages.articleDeleteForbidden);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(`${err.value} is not a valid ObjectId`));
+        next(new errorExtenders.BadRequestError(messages.invalidObjectId));
       }
       next(err);
     });

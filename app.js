@@ -1,15 +1,18 @@
 require('dotenv').config();
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
 
-const router = require('./routes/router');
+const router = require('./routes/index');
 const auth = require('./middlewares/auth.js');
 const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 const { login, createUser } = require('./controllers/users.js');
+const errorsProcessor = require('./helpers/errorsProcessor');
+const { mongoAddress } = require('./appconfig');
 
 const { PORT = 3000 } = process.env;
 
@@ -18,13 +21,14 @@ const app = express();
 // eslint-disable-next-line no-console
 console.log(`server running on port ${PORT}`);
 
-mongoose.connect('mongodb://localhost:27017/news-explorer-db', {
+mongoose.connect(mongoAddress, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
 
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(requestLogger);
@@ -49,14 +53,6 @@ app.use('/', router);
 
 app.use(errorLogger);
 app.use(errors());
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    message: statusCode === 500
-      ? 'Internal server error'
-      : message,
-  });
-});
+app.use(errorsProcessor);
 
 app.listen(PORT);

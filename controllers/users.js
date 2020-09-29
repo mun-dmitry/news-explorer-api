@@ -1,16 +1,17 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { devKey } = require('../appconfig');
 
-const { JWT_SECRET = 'dev-key' } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
-const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
+const errorExtenders = require('../helpers/errorsProcessor').classes;
+const { messages, regExps } = require('../constants');
 
 const sendUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        throw new errorExtenders.NotFoundError(messages.userNotFound);
       }
       res.send({
         data: {
@@ -22,11 +23,6 @@ const sendUser = (req, res, next) => {
     .catch(next);
 };
 
-const validatePassword = (password) => {
-  const passwordRegExp = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})');
-  return passwordRegExp.test(password);
-};
-
 const createUser = (req, res, next) => {
   const {
     name, email, password,
@@ -35,8 +31,8 @@ const createUser = (req, res, next) => {
     .then(() => {
       bcrypt.hash(password, 10)
         .then((hash) => {
-          if (!validatePassword(password)) {
-            throw new BadRequestError('Пароль должен содержать не менее 8 символов, включая по меньшей мере 1 цифру, 1 букву нижнего регистра и 1 букву верхнего регистра. Пароль может состоять только из цифр и букв латинского алфавита');
+          if (!regExps.password.test(password)) {
+            throw new errorExtenders.BadRequestError(messages.passwordValidationRules);
           }
           return User.create({
             name,
@@ -46,7 +42,8 @@ const createUser = (req, res, next) => {
         })
         .then((user) => {
           User.findById(user._id)
-            .then((createdUser) => res.send({ data:
+            .then((createdUser) => res.send({
+              data:
               {
                 name: createdUser.name,
                 email: createdUser.email,
@@ -68,7 +65,7 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        JWT_SECRET,
+        NODE_ENV === 'production' ? JWT_SECRET : devKey,
         { expiresIn: '7d' },
       );
       res.cookie('jwt', token, {

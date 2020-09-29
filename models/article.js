@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const validate = require('mongoose-validator');
+const { messages } = require('../constants');
 
 const urlValidator = [
   validate({
     validator: 'isURL',
-    message: 'supposed to get a valid URL',
+    message: messages.invalidUrl,
   }),
 ];
 
@@ -41,7 +42,7 @@ const articleSchema = new mongoose.Schema({
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'user',
     required: true,
     select: false,
   },

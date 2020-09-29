@@ -1,14 +1,13 @@
-const router = require('express').Router();
+const articles = require('express').Router();
+
 const { celebrate, Joi } = require('celebrate');
 Joi.objectId = require('joi-objectid')(Joi);
 
-const { sendUser } = require('../controllers/users');
 const { sendArticles, createArticle, deleteArticle } = require('../controllers/articles');
-const urlValidationHelper = require('../middlewares/urlValidationHelper');
+const urlValidationHelper = require('../helpers/urlValidationHelper');
 
-router.get('/users/me', sendUser);
-router.get('/articles', sendArticles);
-router.post('/articles', celebrate({
+articles.get('/articles', sendArticles);
+articles.post('/articles', celebrate({
   body: Joi.object().keys({
     keyword: Joi.string().required(),
     title: Joi.string().required(),
@@ -19,10 +18,10 @@ router.post('/articles', celebrate({
     image: Joi.string().required().uri().custom(urlValidationHelper, 'custom URL validation'),
   }),
 }), createArticle);
-router.delete('/articles/:articleId', celebrate({
+articles.delete('/articles/:articleId', celebrate({
   params: Joi.object().keys({
     articleId: Joi.objectId(),
   }),
 }), deleteArticle);
 
-module.exports = router;
+module.exports = articles;
