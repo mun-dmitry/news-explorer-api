@@ -31,6 +31,6 @@ Backend часть дипломной работы по курсу веб-раз
 - DELETE /articles/articleId  
 удаляет сохранённую статью  по _id
 ## Сайт проекта
-IP сервера `130.193.50.208`
+IP сервера `130.193.50.208`  
 API сервера `https://api.yapr-news-explorer.tk`  
 [News-explorer](https://yapr-news-explorer.tk)
