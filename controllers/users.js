@@ -70,7 +70,7 @@ const login = (req, res, next) => {
       );
       res.cookie('jwt', token, {
         maxAge: 7 * 24 * 3600000,
-        httpOnly: true,
+        httpOnly: false,
       })
         .send({ message: 'Authorization successfull' });
     })
