@@ -34,7 +34,7 @@ app.use(limiter);
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(requestLogger);
-app.use(cors());
+app.use(cors({ credentials: true }));
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
