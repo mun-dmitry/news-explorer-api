@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
+const cors = require('cors');
 
 const router = require('./routes/index');
 const auth = require('./middlewares/auth.js');
@@ -33,6 +34,7 @@ app.use(limiter);
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(requestLogger);
+app.use(cors());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
