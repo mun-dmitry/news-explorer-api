@@ -12,6 +12,7 @@ const urlValidator = [
 const articleSchema = new mongoose.Schema({
   keyword: {
     type: String,
+    required: true,
   },
   title: {
     type: String,
