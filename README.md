@@ -15,11 +15,11 @@ Backend часть дипломной работы по курсу веб-раз
 `wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -`  
 `echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list`  
 `sudo apt-get update`  
-`sudo apt-get install -y mongodb-org`
-Запустите Mongo
-`sudo service mongod start`
-Не забудьте добавить сервер Mongo в автозапуск
-`sudo systemctl enable mongod.service`
+`sudo apt-get install -y mongodb-org`  
+Запустите Mongo  
+`sudo service mongod start`  
+Не забудьте добавить сервер Mongo в автозапуск  
+`sudo systemctl enable mongod.service`  
 3. Установите GIT
 `sudo apt install git`
 4. Клонируйте проект на свой ПК командой  
