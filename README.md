@@ -9,12 +9,12 @@ Backend часть дипломной работы по курсу веб-раз
 - GIT
 ## Инструкция по запуску проекта
 1. Установите на сервер NodeJs. Проект разрабатывался на версии 14.17.3.
-`curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -`
+`curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -`  
 `sudo apt-get install -y nodejs`
 2. Установите MongoDB версии 4.2
-`wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -`
-`echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list`
-`sudo apt-get update`
+`wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -`  
+`echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list`  
+`sudo apt-get update`  
 `sudo apt-get install -y mongodb-org`
 Запустите Mongo
 `sudo service mongod start`
